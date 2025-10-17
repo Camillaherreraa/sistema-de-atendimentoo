@@ -1,0 +1,18 @@
+.menu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.tile {
+  display: grid;
+  place-items: center;
+  height: 110px;
+  border-radius: 14px;
+  background: var(--ion-color-step-100, white);
+  color: var(--ion-color-primary-contrast, #fff);
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform .1s ease;
+  border: 1px solid var(--ion-color-step-150, #2a2a2a);
+}
+.tile:hover { transform: translateY(-2px); }

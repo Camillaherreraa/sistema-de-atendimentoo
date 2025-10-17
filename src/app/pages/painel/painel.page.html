@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Painel (5 últimas chamadas)</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list lines="full">
+    <ion-item *ngFor="let c of calls(); let i = index">
+      <ion-label>
+        <h2 class="code">{{ c.code }}</h2>
+        <p>Tipo: {{ c.type }} • Guichê {{ c.counter }} • {{ c.called_at | date:'shortTime' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="!calls().length" class="empty">Sem chamadas ainda…</div>
+</ion-content>

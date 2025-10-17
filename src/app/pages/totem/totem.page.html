@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Totem</ion-title>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/home"></ion-back-button></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="grid">
+    <ion-button expand="block" size="large" class="sp" [disabled]="busy()" (click)="emit('SP')">
+      Senha Prioritária (SP)
+    </ion-button>
+    <ion-button expand="block" size="large" class="sg" [disabled]="busy()" (click)="emit('SG')">
+      Senha Geral (SG)
+    </ion-button>
+    <ion-button expand="block" size="large" class="se" [disabled]="busy()" (click)="emit('SE')">
+      Exames (SE)
+    </ion-button>
+  </div>
+
+  <ion-card *ngIf="lastTicket() as t">
+    <ion-card-header>
+      <ion-card-title>Senha emitida</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="code">{{ t.code }}</div>
+      <div>Tipo: {{ t.type }}</div>
+      <div>Emitida: {{ t.issued_at | date:'short' }}</div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

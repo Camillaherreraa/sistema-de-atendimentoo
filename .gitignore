@@ -1,0 +1,22 @@
+# dependências
+node_modules/
+server/node_modules/
+
+# build
+www/
+dist/
+coverage/
+.tmp/
+
+# ambiente
+.env
+server/.env
+
+# IDE / sistema
+.vscode/
+.DS_Store
+Thumbs.db
+
+# cache
+package-lock.json
+server/package-lock.json
