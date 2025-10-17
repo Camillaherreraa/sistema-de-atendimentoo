@@ -8,7 +8,6 @@
 
   <div class="grid">
 
-    <!-- Lista (desktop à esquerda; mobile abaixo do card) -->
     <section class="list">
       <h2>Ultimas senhas chamadas:</h2>
 
@@ -24,7 +23,6 @@
       </ion-list>
     </section>
 
-    <!-- Destaque da última chamada -->
     <section class="highlight" *ngIf="latest() as l">
       <div class="highlight__title">SENHA:</div>
       <div class="highlight__code">{{ l.code }}</div>
@@ -35,7 +33,6 @@
 
   </div>
 
-  <!-- Quando ainda não há chamadas -->
   <div class="empty" *ngIf="!latest()">Sem chamadas ainda…</div>
 
 </ion-content>

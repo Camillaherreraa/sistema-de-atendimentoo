@@ -28,7 +28,6 @@ export class AdminRelatoriosPage {
 
   constructor(private api: ApiService) {}
 
-  // >>> handlers corretos para IonInput (valor vem em event.detail.value)
   onDate(ev: any)  { this.date.set(ev?.detail?.value ?? ''); }
   onYear(ev: any)  { const v = Number(ev?.detail?.value); this.year.set(isNaN(v) ? null : v); }
   onMonth(ev: any) { const v = Number(ev?.detail?.value); this.month.set(isNaN(v) ? null : v); }

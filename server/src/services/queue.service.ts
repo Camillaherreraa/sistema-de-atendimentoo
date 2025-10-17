@@ -1,10 +1,9 @@
-// Simples e em memória para testar o fluxo
 export type TicketType = 'SP' | 'SG' | 'SE';
 export type TicketStatus = 'queued' | 'called' | 'served' | 'discarded';
 
 export interface Ticket {
   id: number;
-  code: string;         // YYMMDD-PPSQ
+  code: string;         
   type: TicketType;
   issued_at: Date;
   status: TicketStatus;
@@ -24,8 +23,8 @@ export interface CallRow {
 let autoId = 1;
 const queues: Record<TicketType, Ticket[]> = { SP: [], SG: [], SE: [] };
 const calls: CallRow[] = [];
-const sequences: Record<string, number> = {}; // chave: YYMMDD-PP -> seq
-let lastPriorityCalled: TicketType | null = null; // para alternância
+const sequences: Record<string, number> = {};
+let lastPriorityCalled: TicketType | null = null; 
 
 function todayYYMMDD() {
   const d = new Date();
@@ -65,17 +64,12 @@ function popFromQueue(t: TicketType): Ticket | null {
   return q.shift() ?? null;
 }
 
-/**
- * Alternância pedida: [SP] → [SE|SG] → [SP] → [SE|SG]...
- * Se a preferida do passo não existir, chama a outra disponível.
- */
+
 export function callNext(counter: number): Ticket | null {
   const pick = (): Ticket | null => {
     if (lastPriorityCalled === 'SP') {
-      // agora tentar SE ou SG
       return popFromQueue('SE') ?? popFromQueue('SG') ?? popFromQueue('SP');
     }
-    // se última foi SE/SG (ou nenhuma ainda), prioriza SP
     return popFromQueue('SP') ?? popFromQueue('SE') ?? popFromQueue('SG');
   };
 
@@ -88,7 +82,7 @@ export function callNext(counter: number): Ticket | null {
 
   lastPriorityCalled = t.type;
 
-  // registra chamada p/ painel (guarda todas e exibimos as 5 últimas)
+  
   calls.push({
     ticket_id: t.id,
     code: t.code,
@@ -101,31 +95,77 @@ export function callNext(counter: number): Ticket | null {
 }
 
 export function finishTicket(id: number) {
-  // como estamos em memória, procure em todas as filas + chamados
+
   const all: Ticket[] = [
     ...queues.SP, ...queues.SG, ...queues.SE,
-    ...calls.map(c => ({ id: c.ticket_id } as Ticket)), // ids chamados
+    ...calls.map(c => ({ id: c.ticket_id } as Ticket)),
   ];
-  // Em memória simples: vamos também olhar no histórico de chamadas
   let found: Ticket | undefined;
 
-  // tentar achar nas filas primeiro
   for (const k of ['SP', 'SG', 'SE'] as TicketType[]) {
     const idx = queues[k].findIndex(x => x.id === id);
     if (idx >= 0) { found = queues[k][idx]; break; }
   }
 
-  // se não achou nas filas, não temos referência direta; então marcaremos
-  // como servido apenas no "mundo real" (a UI já considera finalizado)
   if (found) {
     found.status = 'served';
     found.served_at = new Date();
     return true;
   }
 
-  return true; // ok para teste
+  return true; 
 }
 
 export function lastCalls(limit = 5): CallRow[] {
   return calls.slice(-limit).reverse();
+}
+
+
+
+
+function ymd(d: Date) { return d.toISOString().slice(0,10); }
+function sameMonth(d: Date, y: number, m: number) {
+  return d.getFullYear() === y && (d.getMonth()+1) === m;
+}
+
+export function reportDaily(dateStr: string) {
+  // tickets emitidos no dia
+  const allTickets = [...queues.SP, ...queues.SG, ...queues.SE];
+  const issued = allTickets.filter(t => ymd(t.issued_at) === dateStr);
+
+  // chamadas no dia
+  const inDayCalls = calls.filter(c => ymd(new Date(c.called_at)) === dateStr);
+
+  const tipos: Record<TicketType, number> = { SP:0, SG:0, SE:0 };
+  issued.forEach(t => tipos[t.type]++);
+
+  return {
+    totais: {
+      emitidas: issued.length,
+      atendidas: inDayCalls.length,
+      descartadas: 0
+    },
+    tipos,
+    detalhado: issued
+      .map(t => ({ code: t.code, type: t.type, issued_at: t.issued_at, counter: t.counter ?? null }))
+      .sort((a,b) => +new Date(b.issued_at) - +new Date(a.issued_at))
+  };
+}
+
+export function reportMonthly(year: number, month: number) {
+  const allTickets = [...queues.SP, ...queues.SG, ...queues.SE];
+  const monthTickets = allTickets.filter(t => sameMonth(t.issued_at, year, month));
+  const monthCalls   = calls.filter(c => sameMonth(new Date(c.called_at), year, month));
+
+  const tipos: Record<TicketType, number> = { SP:0, SG:0, SE:0 };
+  monthTickets.forEach(t => tipos[t.type]++);
+
+  return {
+    totais: {
+      emitidas: monthTickets.length,
+      atendidas: monthCalls.length,
+      descartadas: 0
+    },
+    tipos
+  };
 }

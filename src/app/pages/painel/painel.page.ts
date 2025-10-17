@@ -18,15 +18,12 @@ import { interval, Subscription, switchMap } from 'rxjs';
   styleUrls: ['./painel.page.scss']
 })
 export class PainelPage implements OnDestroy {
-  // últimas chamadas (mais recente primeiro)
   calls = signal<CallRow[]>([]);
-  // mais recente para o card
   latest = computed(() => this.calls()[0] ?? null);
 
   private sub?: Subscription;
 
   constructor(private api: ApiService) {
-    // atualiza a cada 1.5s
     this.sub = interval(1500)
       .pipe(switchMap(() => this.api.lastCalls()))
       .subscribe(rows => this.calls.set(rows ?? []));

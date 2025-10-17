@@ -5,7 +5,6 @@
 </ion-header>
 
 <ion-content class="page">
-  <!-- Botões (não são <ion-button> para evitar o “card” branco) -->
   <div class="grid">
     <div class="action" (click)="emit('SP')">
       <span class="action__label">SENHA PRIORITÁRIA<br />(SP)</span>
@@ -20,7 +19,6 @@
     </div>
   </div>
 
-  <!-- Confirmação -->
   <section class="ticket" *ngIf="lastTicket() as t">
     <h3 class="ticket__title">Senha emitida</h3>
     <div class="ticket__code">{{ t.code }}</div>
