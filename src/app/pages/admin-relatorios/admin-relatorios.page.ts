@@ -17,10 +17,9 @@ import { ApiService } from '../../core/api';
   styleUrls: ['./admin-relatorios.page.scss']
 })
 export class AdminRelatoriosPage {
-  // simples: strings cruas pro input type="date"/"number"
-  date = signal<string>('');
-  year = signal<number | null>(null);
-  month = signal<number | null>(null);
+  date = signal<string>('');           // yyyy-MM-dd
+  year = signal<number | null>(null);  // ex: 2025
+  month = signal<number | null>(null); // 1..12
 
   dailyData = signal<any | null>(null);
   monthlyData = signal<any | null>(null);
@@ -29,28 +28,31 @@ export class AdminRelatoriosPage {
 
   constructor(private api: ApiService) {}
 
+  // >>> handlers corretos para IonInput (valor vem em event.detail.value)
+  onDate(ev: any)  { this.date.set(ev?.detail?.value ?? ''); }
+  onYear(ev: any)  { const v = Number(ev?.detail?.value); this.year.set(isNaN(v) ? null : v); }
+  onMonth(ev: any) { const v = Number(ev?.detail?.value); this.month.set(isNaN(v) ? null : v); }
+
   async loadDaily() {
-    if (!this.date()) { this.msg.set('Informe uma data.'); return; }
-    this.loading.set(true);
-    this.msg.set(null);
+    if (!this.date()) { this.msg.set('Informe uma data (YYYY-MM-DD).'); return; }
+    this.loading.set(true); this.msg.set(null);
     try {
       const data = await this.api.daily(this.date()).toPromise();
       this.dailyData.set(data);
-    } finally {
-      this.loading.set(false);
-    }
+    } catch (e:any) {
+      this.msg.set('Erro ao carregar diário: ' + (e?.message ?? e));
+    } finally { this.loading.set(false); }
   }
 
   async loadMonthly() {
     const y = this.year(), m = this.month();
     if (!y || !m) { this.msg.set('Informe ano e mês.'); return; }
-    this.loading.set(true);
-    this.msg.set(null);
+    this.loading.set(true); this.msg.set(null);
     try {
       const data = await this.api.monthly(String(y), String(m)).toPromise();
       this.monthlyData.set(data);
-    } finally {
-      this.loading.set(false);
-    }
+    } catch (e:any) {
+      this.msg.set('Erro ao carregar mensal: ' + (e?.message ?? e));
+    } finally { this.loading.set(false); }
   }
 }

@@ -1,23 +1,12 @@
 import { Component, signal } from '@angular/core';
-import {
-  IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
-  IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-  IonButtons, IonBackButton
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import { NgIf, DatePipe } from '@angular/common';
 import { ApiService, Ticket } from '../../core/api';
 
 @Component({
   selector: 'app-totem',
   standalone: true,
-  imports: [
-    // Ionic
-    IonHeader, IonToolbar, IonTitle, IonContent, IonButton,
-    IonCard, IonCardHeader, IonCardTitle, IonCardContent,
-    IonButtons, IonBackButton,
-    // Angular
-    NgIf, DatePipe
-  ],
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, NgIf, DatePipe],
   templateUrl: './totem.page.html',
   styleUrls: ['./totem.page.scss']
 })

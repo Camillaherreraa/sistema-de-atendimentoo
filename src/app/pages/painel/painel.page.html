@@ -1,18 +1,41 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Painel (5 últimas chamadas)</ion-title>
+  <ion-toolbar class="header-blue">
+    <ion-title></ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-list lines="full">
-    <ion-item *ngFor="let c of calls(); let i = index">
-      <ion-label>
-        <h2 class="code">{{ c.code }}</h2>
-        <p>Tipo: {{ c.type }} • Guichê {{ c.counter }} • {{ c.called_at | date:'shortTime' }}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+<ion-content class="page ion-padding">
 
-  <div *ngIf="!calls().length" class="empty">Sem chamadas ainda…</div>
+  <div class="grid">
+
+    <!-- Lista (desktop à esquerda; mobile abaixo do card) -->
+    <section class="list">
+      <h2>Ultimas senhas chamadas:</h2>
+
+      <ion-list lines="none">
+        <ion-item *ngFor="let c of calls()">
+          <ion-label>
+            <div class="list-code">{{ c.code }}</div>
+            <div class="list-meta">
+              Tipo: {{ c.type }} • Guichê {{ c.counter }} • {{ c.called_at | date:'shortTime' }}
+            </div>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </section>
+
+    <!-- Destaque da última chamada -->
+    <section class="highlight" *ngIf="latest() as l">
+      <div class="highlight__title">SENHA:</div>
+      <div class="highlight__code">{{ l.code }}</div>
+      <div class="highlight__meta">
+        Tipo: {{ l.type }} • Guichê {{ l.counter }} • {{ l.called_at | date:'shortTime' }}
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Quando ainda não há chamadas -->
+  <div class="empty" *ngIf="!latest()">Sem chamadas ainda…</div>
+
 </ion-content>

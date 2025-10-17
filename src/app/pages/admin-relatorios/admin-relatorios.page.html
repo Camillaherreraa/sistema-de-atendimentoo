@@ -1,18 +1,19 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="header-blue">
     <ion-title>Relatórios</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
+
   <h2>Relatório Diário</h2>
   <ion-item>
     <ion-label position="stacked">Data</ion-label>
-    <ion-input type="date" [value]="date()" (ionInput)="date.set($any($event.target).value)"></ion-input>
+    <ion-input type="date" [value]="date()" (ionInput)="onDate($event)"></ion-input>
   </ion-item>
   <ion-button expand="block" [disabled]="loading()" (click)="loadDaily()">Carregar diário</ion-button>
 
-  <div *ngIf="dailyData() as d">
+  <div *ngIf="dailyData() as d" class="block">
     <ion-list>
       <ion-list-header>Totais</ion-list-header>
       <ion-item>Emitidas: {{ d.totais?.emitidas ?? 0 }}</ion-item>
@@ -42,16 +43,16 @@
   <div class="grid">
     <ion-item>
       <ion-label position="stacked">Ano</ion-label>
-      <ion-input type="number" placeholder="2025" [value]="year() ?? ''" (ionInput)="year.set(+$any($event.target).value)"></ion-input>
+      <ion-input type="number" placeholder="2025" [value]="year() ?? ''" (ionInput)="onYear($event)"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">Mês</ion-label>
-      <ion-input type="number" placeholder="10" [value]="month() ?? ''" (ionInput)="month.set(+$any($event.target).value)"></ion-input>
+      <ion-input type="number" placeholder="10" [value]="month() ?? ''" (ionInput)="onMonth($event)"></ion-input>
     </ion-item>
   </div>
   <ion-button expand="block" [disabled]="loading()" (click)="loadMonthly()">Carregar mensal</ion-button>
 
-  <div *ngIf="monthlyData() as m">
+  <div *ngIf="monthlyData() as m" class="block">
     <ion-list>
       <ion-list-header>Totais no mês</ion-list-header>
       <ion-item>Emitidas: {{ m.totais?.emitidas ?? 0 }}</ion-item>
